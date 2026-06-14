@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+button,
+input,
+textarea {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+body {
+  background: #f8f8f8;
+}
+
+.container-v2 {
+  @apply max-w-7xl w-full px-10 sm:px-5;
+}
