@@ -5,6 +5,8 @@ import NotFoundError from "./pages/NotFoundError";
 import ChatLayout from "./layouts/ChatLayout";
 import MainChatLayout from "./layouts/MainChatLayout";
 import CommunitiesLayout from "./layouts/CommunitiesLayout";
+import UserPersonalProfile from "./pages/UserPersonalProfile";
+import Profile from './pages/Profile';
 
 function App() {
   const routes = createBrowserRouter([
@@ -38,8 +40,16 @@ function App() {
           path: "saved",
           element: "Bookmarks",
         },
+        {
+          path: "profile/:temp_id/:user_id",
+          element: <Profile />,
+        },
       ],
     },
+    {
+      path: "/profile",
+      element: <UserPersonalProfile />
+    }
   ]);
   return <RouterProvider router={routes} />;
 }

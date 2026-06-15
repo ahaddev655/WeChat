@@ -1,5 +1,5 @@
 import { Bookmark, MessageSquareText, Users } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 function SecondarySidebar() {
   const iconData = [
@@ -53,11 +53,14 @@ function SecondarySidebar() {
 
         {/* Profile Button */}
         <div className="w-full flex justify-center pt-4 border-t border-gray-100">
-          <div className="w-11 h-11 cursor-pointer rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 text-white shadow-sm hover:shadow-md hover:scale-105 grid place-items-center transition-all duration-200 ease-in-out">
+          <Link
+            to={"/profile"}
+            className="w-11 h-11 cursor-pointer rounded-xl bg-linear-to-tr from-blue-600 to-indigo-600 text-white shadow-sm hover:shadow-md hover:scale-105 grid place-items-center transition-all duration-200 ease-in-out"
+          >
             <span className="text-xs font-bold tracking-wider uppercase">
               MA
             </span>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

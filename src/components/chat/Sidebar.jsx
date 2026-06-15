@@ -15,7 +15,6 @@ function Sidebar() {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahad",
       status: 1,
       active_at: "10:45 AM",
-      unreadCount: 2,
     },
     {
       temp_id: "UID-8F3K9M2X",
@@ -25,7 +24,6 @@ function Sidebar() {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       status: 0,
       active_at: "Yesterday",
-      unreadCount: 0,
     },
     {
       temp_id: "UID-8F3K9M2X",
@@ -35,7 +33,6 @@ function Sidebar() {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
       status: 0,
       active_at: "Friday",
-      unreadCount: 0,
     },
   ]);
 
@@ -147,12 +144,6 @@ function Sidebar() {
                         <p className="text-xs text-gray-500 truncate max-w-35">
                           {user.status === 1 ? "Online" : "Offline"}
                         </p>
-
-                        {user.unreadCount > 0 && (
-                          <span className="flex h-5 min-w-5 px-1.5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white shadow-sm animate-pulse">
-                            {user.unreadCount}
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
