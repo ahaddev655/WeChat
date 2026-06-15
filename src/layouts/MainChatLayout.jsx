@@ -3,10 +3,13 @@ import Header from "../components/chat/Header";
 
 function MainChatLayout() {
   return (
-    <>
+    <div className="flex flex-col h-full overflow-y-hidden">
       <Header />
-      <Outlet />
-    </>
+
+      <div className="flex-1 relative">
+        <Outlet />
+      </div>
+    </div>
   );
 }
 

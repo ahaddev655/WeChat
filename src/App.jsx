@@ -6,7 +6,8 @@ import ChatLayout from "./layouts/ChatLayout";
 import MainChatLayout from "./layouts/MainChatLayout";
 import CommunitiesLayout from "./layouts/CommunitiesLayout";
 import UserPersonalProfile from "./pages/UserPersonalProfile";
-import Profile from './pages/Profile';
+import Profile from "./pages/Profile";
+import ChatComp from "./components/chat/ChatComp";
 
 function App() {
   const routes = createBrowserRouter([
@@ -25,6 +26,12 @@ function App() {
         {
           path: ":temp_id/:id",
           element: <MainChatLayout />,
+          children: [
+            {
+              index: true,
+              element: <ChatComp />,
+            },
+          ],
         },
         {
           path: "communities",
@@ -48,8 +55,8 @@ function App() {
     },
     {
       path: "/profile",
-      element: <UserPersonalProfile />
-    }
+      element: <UserPersonalProfile />,
+    },
   ]);
   return <RouterProvider router={routes} />;
 }
