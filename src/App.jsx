@@ -8,6 +8,7 @@ import CommunitiesLayout from "./layouts/CommunitiesLayout";
 import UserPersonalProfile from "./pages/UserPersonalProfile";
 import Profile from "./pages/Profile";
 import ChatComp from "./components/chat/ChatComp";
+import CommunityComp from "./components/chat/CommunityComp";
 
 function App() {
   const routes = createBrowserRouter([
@@ -39,7 +40,7 @@ function App() {
           children: [
             {
               path: ":temp_id/:id",
-              element: "Communities",
+              element: <CommunityComp />,
             },
           ],
         },

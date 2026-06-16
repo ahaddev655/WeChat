@@ -2,7 +2,7 @@ import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-function ChatComp() {
+function CommunityComp() {
   // --- States ---
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("Muhammad");
@@ -21,7 +21,11 @@ function ChatComp() {
   // --- Messages Stored Data ---
   const [messageData, setMessageData] = useState([
     { sender: "Ayesha", messageText: "Hey", time: "12:45 PM" },
-    { sender: "Ayesha", messageText: "How are you?", time: "12:45 PM" },
+    {
+      sender: "Ayesha",
+      messageText: "How are you?",
+      time: "12:45 PM",
+    },
     { sender: "Muhammad", messageText: "I am fine", time: "12:45 PM" },
   ]);
 
@@ -59,7 +63,7 @@ function ChatComp() {
   return (
     <div className="px-4 py-3 relative flex flex-col h-full pb-20">
       <div
-        className="h-full overflow-auto scrollbar-none flex flex-col gap-3"
+        className="flex-1 overflow-auto scrollbar-none flex flex-col gap-3"
         ref={chatParentDivRef}
       >
         {messageData.map((message, i) => (
@@ -123,4 +127,4 @@ function ChatComp() {
   );
 }
 
-export default ChatComp;
+export default CommunityComp;
