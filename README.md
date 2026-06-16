@@ -188,7 +188,7 @@ Make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/wechat.git
+git clone https://github.com/ahaddev655/wechat.git
 cd wechat
 ```
 
@@ -411,7 +411,7 @@ in the Software without restriction...
 
 If you found this project helpful, please consider giving it a ⭐ on GitHub — it helps others discover it!
 
-[![GitHub stars](https://img.shields.io/github/stars/your-username/wechat?style=social)](https://github.com/your-username/wechat)
+[![GitHub stars](https://img.shields.io/github/stars/ahaddev655/wechat?style=social)](https://github.com/ahaddev655/wechat)
 
 </div>
 
