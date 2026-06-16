@@ -1,19 +1,22 @@
 import { Bookmark, MessageSquareText, Users } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 
-function SecondarySidebar() {
+function SecondarySidebar({ setContentType }) {
   const iconData = [
     {
       icon: MessageSquareText,
       path: "/chat",
+      key: "chat",
     },
     {
       icon: Users,
       path: "/chat/communities",
+      key: "communities",
     },
     {
       icon: Bookmark,
       path: "/chat/saved",
+      key: "bookmarks",
     },
   ];
 
@@ -28,6 +31,7 @@ function SecondarySidebar() {
             return (
               <NavLink
                 to={icon.path}
+                onClick={() => setContentType(icon.key)}
                 end
                 key={i}
                 className="relative w-full flex justify-center group"

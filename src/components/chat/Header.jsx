@@ -14,13 +14,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 function Header() {
   // --- States ---
-
   const [searchToggle, setSearchToggle] = useState(false);
   const [settingsToggle, setSettingsToggle] = useState(false);
   const [searchData, setSearchData] = useState("");
   const [modalToggle, setModalToggle] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+
+  // --- Use Refs ---
+
+  const dropdownRef = useRef();
+  const buttonRef = useRef();
 
   // --- Variables ---
 
@@ -45,35 +49,18 @@ function Header() {
       active_at: "10:45 AM",
       unreadCount: 2,
     },
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 2,
-      fname: "Sarah",
-      lname: "Ahmed",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      status: 0,
-      active_at: "Yesterday",
-      unreadCount: 0,
-    },
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 3,
-      fname: "John",
-      lname: "Doe",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
-      status: 0,
-      active_at: "Friday",
-      unreadCount: 0,
-    },
   ]);
 
   // --- Dropdown Logic ---
 
-  const dropdownRef = useRef();
-
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      const clickedDropdown =
+        dropdownRef.current && dropdownRef.current.contains(event.target);
+      const clickedButton =
+        buttonRef.current && buttonRef.current.contains(event.target);
+
+      if (!clickedDropdown && !clickedButton) {
         setSettingsToggle(false);
       }
     };
@@ -83,7 +70,7 @@ function Header() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [settingsToggle]);
+  }, []);
 
   return (
     <>
@@ -120,6 +107,7 @@ function Header() {
             />
           </button>
           <button
+            ref={buttonRef}
             type="button"
             onClick={() => setSettingsToggle(!settingsToggle)}
           >

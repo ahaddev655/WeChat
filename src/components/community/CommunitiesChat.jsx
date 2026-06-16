@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function CommunitiesChat() {
-  return (
-    <div>CommunitiesChat</div>
-  )
+  return <div>CommunitiesChat</div>;
 }
 
-export default CommunitiesChat
+export default CommunitiesChat;

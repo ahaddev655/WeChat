@@ -15,5 +15,5 @@ body {
 }
 
 .container-v2 {
-  @apply max-w-7xl w-full px-10 sm:px-5;
+  @apply max-w-360 w-full px-10 sm:px-5;
 }
