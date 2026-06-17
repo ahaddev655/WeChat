@@ -2,7 +2,7 @@ import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-function ChatComp() {
+function BookmarksComp() {
   // --- States ---
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("Muhammad Ahad");
@@ -20,8 +20,12 @@ function ChatComp() {
 
   // --- Messages Stored Data ---
   const [messageData, setMessageData] = useState([
-    { sender: "Ayesha", messageText: "Hey", time: "12:45 PM" },
-    { sender: "Ayesha", messageText: "How are you?", time: "12:45 PM" },
+    { sender: "Ayesha Siraj", messageText: "Hey", time: "12:45 PM" },
+    {
+      sender: "John Doe",
+      messageText: "How are you?",
+      time: "12:45 PM",
+    },
     { sender: "Muhammad Ahad", messageText: "I am fine", time: "12:45 PM" },
   ]);
 
@@ -59,31 +63,49 @@ function ChatComp() {
   return (
     <div className="px-4 py-3 relative flex flex-col h-full pb-20">
       <div
-        className="h-full overflow-auto scrollbar-none flex flex-col gap-3"
+        className="flex-1 overflow-auto scrollbar-none flex flex-col gap-4"
         ref={chatParentDivRef}
       >
         {messageData.map((message, i) => (
           <div
             key={i}
-            className={`flex w-full items-end gap-2 ${
+            className={`flex w-full items-end gap-3 ${
               message.sender === userName ? "justify-end" : "justify-start"
             }`}
           >
+            {/* Avatar Name */}
+            {message.sender === userName ? (
+              ""
+            ) : (
+              <div className="w-9 h-9 bg-linear-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0">
+                <span>{message.sender?.charAt(0).toUpperCase()}</span>
+              </div>
+            )}
+
             {/* Message Bubble */}
             <div
-              className={`max-w-md rounded-2xl px-4 py-2 text-sm wrap-break-word shadow-sm
-      ${
-        message.sender === userName
-          ? "bg-blue-600 text-white rounded-br-none order-2"
-          : "bg-white text-neutral-800 rounded-bl-none border border-gray-100 order-1"
-      }`}
+              className={`flex flex-col gap-1 max-w-md ${message.sender === userName ? "items-end order-2" : "items-start order-1"}`}
             >
-              {message.messageText}
+              {message.sender !== userName && (
+                <span className="text-[11px] font-semibold text-blue-600 px-1 select-none">
+                  {message.sender}
+                </span>
+              )}
+              <div
+                className={`rounded-2xl px-4 py-2.5 text-sm wrap-break-word shadow-sm
+        ${
+          message.sender === userName
+            ? "bg-blue-600 text-white rounded-br-none"
+            : "bg-white text-neutral-800 rounded-bl-none border border-neutral-100"
+        }`}
+              >
+                {message.messageText}
+              </div>
             </div>
 
             {/* Timestamp */}
             <div
-              className={`text-[11px] text-gray-400 select-none pb-1
+              className={`text-[10px] text-gray-400 select-none pb-1 font-medium
       ${message.sender === userName ? "order-1" : "order-2"}`}
             >
               {message.time}
@@ -91,36 +113,8 @@ function ChatComp() {
           </div>
         ))}
       </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleMessageSend();
-        }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full p-3.5 flex items-center gap-3 bg-white shadow-[0px_-10px_10px_rgb(0_0_0/0.1)]"
-      >
-        <div className="relative flex-1">
-          <input
-            type="text"
-            name="message"
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-neutral-800 placeholder-gray-400 outline-none transition-all duration-200 ease-in-out focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100"
-            placeholder="Write your message..."
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={!message?.trim()}
-          className="h-11 w-11 shrink-0 rounded-xl bg-blue-600 font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:bg-blue-700 active:scale-95 disabled:pointer-events-none disabled:opacity-40 grid place-items-center"
-        >
-          <Send size={18} color="#ffffff" />
-        </button>
-      </form>
     </div>
   );
 }
 
-export default ChatComp;
+export default BookmarksComp;

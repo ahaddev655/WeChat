@@ -9,6 +9,7 @@ import UserPersonalProfile from "./pages/UserPersonalProfile";
 import Profile from "./pages/Profile";
 import ChatComp from "./components/chat/ChatComp";
 import CommunityComp from "./components/community/CommunityComp";
+import BookmarksComp from './components/BookmarksComp';
 
 function App() {
   const routes = createBrowserRouter([
@@ -46,7 +47,7 @@ function App() {
         },
         {
           path: "saved",
-          element: "Bookmarks",
+          element: <BookmarksComp />,
         },
         {
           path: "profile/:temp_id/:user_id",
