@@ -8,7 +8,7 @@ import CommunitiesLayout from "./layouts/CommunitiesLayout";
 import UserPersonalProfile from "./pages/UserPersonalProfile";
 import Profile from "./pages/Profile";
 import ChatComp from "./components/chat/ChatComp";
-import CommunityComp from "./components/chat/CommunityComp";
+import CommunityComp from "./components/community/CommunityComp";
 
 function App() {
   const routes = createBrowserRouter([

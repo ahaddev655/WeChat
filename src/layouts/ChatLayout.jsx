@@ -1,12 +1,27 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "./../components/chat/Header";
 import Copyright from "./../components/chat/Copyright";
 import Sidebar from "./../components/chat/Sidebar";
 import SecondarySidebar from "./../components/chat/SecondarySidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function ChatLayout() {
   const [contentType, setContentType] = useState("chat");
+  const location = useLocation();
+
+  // --- Toggle Sidebar ---
+  useEffect(() => {
+    const path = location.pathname;
+
+    if (path.includes("/communities")) {
+      setContentType("communities");
+    } else if (path.includes("/bookmarks") || path.includes("/saved")) {
+      setContentType("bookmarks");
+    } else {
+      setContentType("chat");
+    }
+  }, [location.pathname]);
+
   return (
     <div className="flex h-screen">
       <SecondarySidebar setContentType={setContentType} />

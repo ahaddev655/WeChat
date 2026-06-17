@@ -18,7 +18,6 @@ function Sidebar({ contentType }) {
       id: 1,
       fname: "Muhammad",
       lname: "Ahad",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahad",
       status: 1,
       active_at: "10:45 AM",
     },
@@ -27,7 +26,6 @@ function Sidebar({ contentType }) {
       id: 2,
       fname: "Sarah",
       lname: "Ahmed",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       status: 0,
       active_at: "Yesterday",
     },
@@ -36,7 +34,6 @@ function Sidebar({ contentType }) {
       id: 3,
       fname: "John",
       lname: "Doe",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
       status: 0,
       active_at: "Friday",
     },
@@ -158,11 +155,10 @@ function Sidebar({ contentType }) {
                     <div className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-gray-50 active:bg-gray-100 group">
                       {/* Avatar Layout with Dynamic Status Dot */}
                       <div className="relative shrink-0">
-                        <img
-                          src={user.avatar}
-                          alt={`${user.fname} ${user.lname}`}
-                          className="w-11 h-11 rounded-full bg-gray-100 border border-gray-100 object-cover transform group-hover:scale-[1.02] transition-transform"
-                        />
+                        <div className="w-11 h-11 rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0 transform group-hover:scale-[1.02] transition-transform grid place-items-center">
+                          {user?.fname.charAt(0)}
+                          {user?.lname.charAt(0)}
+                        </div>
                         {user.status === 1 && (
                           <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white ring-1 ring-black/5" />
                         )}
