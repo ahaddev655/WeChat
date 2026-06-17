@@ -21,25 +21,22 @@ function Header() {
   const [modalToggle, setModalToggle] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [filteredUsers, setFilteredUsers] = useState(null);
 
   // --- Use Refs ---
-
   const dropdownRef = useRef();
   const buttonRef = useRef();
 
   // --- Variables ---
-
   const route = useLocation();
   const location = route.pathname.split("/");
 
   // --- ID & UID from routing ---
-
   const id = location[2];
   const uid = location[3];
 
   // --- State-Based Data ---
-
-  const [communityData, setCommunityData] = useState([
+  const [userData, setUserData] = useState([
     {
       temp_id: "UID-8F3K9M2X",
       id: 1,
@@ -53,15 +50,24 @@ function Header() {
   ]);
 
   const communityUsers = [
-    { id: 1, name: "Alex Rivera", username: "alex_r", initial: "AR" },
-    { id: 2, name: "Jordan Lee", username: "jordan_l", initial: "JL" },
-    { id: 3, name: "Taylor Swift", username: "taylor_s", initial: "TS" },
-    { id: 4, name: "Morgan Freeman", username: "morgan_f", initial: "MF" },
-    { id: 5, name: "Sam Wilson", username: "sam_w", initial: "SW" },
+    { id: 1, name: "Alex Rivera", initial: "AR" },
+    { id: 2, name: "Jordan Lee", initial: "JL" },
+    { id: 3, name: "Taylor Swift", initial: "TS" },
+    { id: 4, name: "Morgan Freeman", initial: "MF" },
+    { id: 5, name: "Sam Wilson", initial: "SW" },
   ];
 
-  // --- Dropdown Logic ---
+  // --- Filter Logic ---
+  const filterUsers = (query) => {
+    const filtered = communityUsers.filter((user) =>
+      user.name.toLowerCase().includes(query.toLowerCase()),
+    );
+    setFilteredUsers(filtered);
+  };
 
+  const displayUsers = filteredUsers !== null ? filteredUsers : communityUsers;
+
+  // --- Dropdown Logic ---
   useEffect(() => {
     const handleClickOutside = (event) => {
       const clickedDropdown =
@@ -75,11 +81,18 @@ function Header() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleCloseModal = () => {
+    setModalToggle(false);
+    setModalType(null);
+    setSelectedId(null);
+    setSearchData("");
+    setFilteredUsers(null);
+  };
 
   return (
     <>
@@ -101,11 +114,15 @@ function Header() {
                 exit={{ width: 0 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 type="text"
-                name="search"
-                id="search"
+                name="headerSearch"
+                id="headerSearch"
                 value={searchData}
                 placeholder="Search your previous messages..."
-                onChange={(e) => setSearchData(e.target.value)}
+                onChange={(e) => {
+                  const query = e.target.value;
+                  setSearchData(query);
+                  filterUsers(query);
+                }}
                 className="h-9 border-2 border-gray-300 focus:border-blue-900 focus:ring-2 focus:ring-blue-900 rounded-lg px-3 transition-colors duration-200 ease-in-out text-sm font-medium text-neutral-700 outline-none w-70 ml-auto"
               />
             )}
@@ -157,6 +174,7 @@ function Header() {
                 <div className="h-px w-[90%] mx-auto bg-gray-100 my-1" />
 
                 <button
+                  type="button"
                   onClick={() => {
                     setModalToggle(true);
                     setModalType("block");
@@ -174,6 +192,7 @@ function Header() {
                 <div className="h-px w-[90%] mx-auto bg-gray-100 my-1" />
 
                 <button
+                  type="button"
                   onClick={() => {
                     setModalToggle(true);
                     setModalType("delete");
@@ -192,7 +211,7 @@ function Header() {
 
                 <Link
                   to="/"
-                  onClick={() => settingsToggle(false)}
+                  onClick={() => setSettingsToggle(false)}
                   className="flex items-center gap-3 hover:bg-slate-50 active:bg-slate-100 transition-all duration-150 ease-in-out rounded-lg px-3 py-2.5 group"
                 >
                   <Phone className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors duration-150" />
@@ -232,11 +251,7 @@ function Header() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="p-1 rounded-lg hover:bg-slate-100 transition-colors duration-200 group"
                     >
                       <X
@@ -259,20 +274,14 @@ function Header() {
                   <div className="mt-6 flex items-center justify-end gap-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-xl transition-all active:scale-[0.98]"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                      }}
+                      onClick={() => setModalToggle(false)}
                       className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm shadow-red-100 transition-all active:scale-[0.98]"
                     >
                       Delete User
@@ -288,11 +297,7 @@ function Header() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="p-1 rounded-lg hover:bg-slate-100 transition-colors duration-200 group"
                     >
                       <X
@@ -315,20 +320,14 @@ function Header() {
                   <div className="mt-6 flex items-center justify-end gap-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-xl transition-all active:scale-[0.98]"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                      }}
+                      onClick={() => setModalToggle(false)}
                       className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm shadow-red-100 transition-all active:scale-[0.98]"
                     >
                       Block User
@@ -344,11 +343,7 @@ function Header() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="p-1 rounded-lg hover:bg-slate-100 transition-colors duration-200 group"
                     >
                       <X
@@ -362,10 +357,15 @@ function Header() {
                   <div className="mt-4 relative">
                     <input
                       type="text"
+                      value={searchData}
+                      name="modalSearch"
+                      id="modalSearch"
                       placeholder="Search members..."
                       className="w-full px-3 py-2 pl-9 text-sm text-slate-900 placeholder-slate-400 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       onChange={(e) => {
-                        // Handle search filtering logic here if needed
+                        const query = e.target.value;
+                        setSearchData(query);
+                        filterUsers(query);
                       }}
                     />
                     <div className="absolute left-3 top-2.5 text-slate-400">
@@ -374,14 +374,12 @@ function Header() {
                   </div>
 
                   {/* Users List Container */}
-                  <div className="mt-4 max-h-[300px] overflow-y-auto pr-1 space-y-1 scrollbar-thin">
-                    {communityUsers.map((user) => (
+                  <div className="mt-4 max-h-75 overflow-y-auto pr-1 space-y-1 scrollbar-thin">
+                    {displayUsers.map((user) => (
                       <button
                         key={user.id}
                         type="button"
-                        onClick={() => {
-                          setSelectedId(user.id);
-                        }}
+                        onClick={() => setSelectedId(user.id)}
                         className={`w-full flex items-center justify-between p-2.5 rounded-xl transition-all ${
                           selectedId === user.id
                             ? "bg-blue-50 border border-blue-100"
@@ -397,9 +395,6 @@ function Header() {
                             <p className="text-sm font-semibold text-slate-800">
                               {user.name}
                             </p>
-                            <p className="text-xs text-slate-400">
-                              @{user.username}
-                            </p>
                           </div>
                         </div>
 
@@ -409,17 +404,18 @@ function Header() {
                         )}
                       </button>
                     ))}
+                    {displayUsers.length === 0 && (
+                      <p className="text-center text-sm text-gray-400 py-4">
+                        No members found
+                      </p>
+                    )}
                   </div>
 
                   {/* Action Buttons */}
                   <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
                     <button
                       type="button"
-                      onClick={() => {
-                        setModalToggle(false);
-                        setModalType(null);
-                        setSelectedId(null);
-                      }}
+                      onClick={handleCloseModal}
                       className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-xl transition-all active:scale-[0.98]"
                     >
                       Cancel
@@ -427,9 +423,7 @@ function Header() {
                     <button
                       type="button"
                       disabled={!selectedId}
-                      onClick={() => {
-                        setModalToggle(false);
-                      }}
+                      onClick={() => setModalToggle(false)}
                       className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none rounded-xl shadow-sm shadow-blue-100 transition-all active:scale-[0.98]"
                     >
                       Confirm Selection

@@ -1,6 +1,7 @@
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import Header from "./Header";
 
 function CommunityComp() {
   // --- States ---
@@ -61,87 +62,90 @@ function CommunityComp() {
   };
 
   return (
-    <div className="px-4 py-3 relative flex flex-col h-full pb-20">
-      <div
-        className="flex-1 overflow-auto scrollbar-none flex flex-col gap-4"
-        ref={chatParentDivRef}
-      >
-        {messageData.map((message, i) => (
-          <div
-            key={i}
-            className={`flex w-full items-end gap-3 ${
-              message.sender === userName ? "justify-end" : "justify-start"
-            }`}
-          >
-            {/* Avatar Name */}
-            {message.sender === userName ? (
-              ""
-            ) : (
-              <div className="w-9 h-9 bg-linear-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0">
-                <span>{message.sender?.charAt(0).toUpperCase()}</span>
-              </div>
-            )}
-
-            {/* Message Bubble */}
+    <>
+      <Header />
+      <div className="px-4 py-3 relative flex flex-col h-full pb-20">
+        <div
+          className="flex-1 overflow-auto scrollbar-none flex flex-col gap-4"
+          ref={chatParentDivRef}
+        >
+          {messageData.map((message, i) => (
             <div
-              className={`flex flex-col gap-1 max-w-md ${message.sender === userName ? "items-end order-2" : "items-start order-1"}`}
+              key={i}
+              className={`flex w-full items-end gap-3 ${
+                message.sender === userName ? "justify-end" : "justify-start"
+              }`}
             >
-              {message.sender !== userName && (
-                <span className="text-[11px] font-semibold text-blue-600 px-1 select-none">
-                  {message.sender}
-                </span>
+              {/* Avatar Name */}
+              {message.sender === userName ? (
+                ""
+              ) : (
+                <div className="w-9 h-9 bg-linear-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0">
+                  <span>{message.sender?.charAt(0).toUpperCase()}</span>
+                </div>
               )}
+
+              {/* Message Bubble */}
               <div
-                className={`rounded-2xl px-4 py-2.5 text-sm wrap-break-word shadow-sm
+                className={`flex flex-col gap-1 max-w-md ${message.sender === userName ? "items-end order-2" : "items-start order-1"}`}
+              >
+                {message.sender !== userName && (
+                  <span className="text-[11px] font-semibold text-blue-600 px-1 select-none">
+                    {message.sender}
+                  </span>
+                )}
+                <div
+                  className={`rounded-2xl px-4 py-2.5 text-sm wrap-break-word shadow-sm
         ${
           message.sender === userName
             ? "bg-blue-600 text-white rounded-br-none"
             : "bg-white text-neutral-800 rounded-bl-none border border-neutral-100"
         }`}
+                >
+                  {message.messageText}
+                </div>
+              </div>
+
+              {/* Timestamp */}
+              <div
+                className={`text-[10px] text-gray-400 select-none pb-1 font-medium
+      ${message.sender === userName ? "order-1" : "order-2"}`}
               >
-                {message.messageText}
+                {message.time}
               </div>
             </div>
-
-            {/* Timestamp */}
-            <div
-              className={`text-[10px] text-gray-400 select-none pb-1 font-medium
-      ${message.sender === userName ? "order-1" : "order-2"}`}
-            >
-              {message.time}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleMessageSend();
-        }}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full p-3.5 flex items-center gap-3 bg-white shadow-[0px_-10px_10px_rgb(0_0_0/0.05)] border-t border-gray-50"
-      >
-        <div className="relative flex-1">
-          <input
-            type="text"
-            name="message"
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-neutral-800 placeholder-gray-400 outline-none transition-all duration-200 ease-in-out focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100"
-            placeholder="Write your message..."
-          />
+          ))}
         </div>
 
-        <button
-          type="submit"
-          disabled={!message?.trim()}
-          className="h-11 w-11 shrink-0 rounded-xl bg-blue-600 font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:bg-blue-700 active:scale-95 disabled:pointer-events-none disabled:opacity-40 grid place-items-center"
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleMessageSend();
+          }}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full p-3.5 flex items-center gap-3 bg-white shadow-[0px_-10px_10px_rgb(0_0_0/0.05)] border-t border-gray-50"
         >
-          <Send size={18} color="#ffffff" />
-        </button>
-      </form>
-    </div>
+          <div className="relative flex-1">
+            <input
+              type="text"
+              name="message"
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-neutral-800 placeholder-gray-400 outline-none transition-all duration-200 ease-in-out focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              placeholder="Write your message..."
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={!message?.trim()}
+            className="h-11 w-11 shrink-0 rounded-xl bg-blue-600 font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:bg-blue-700 active:scale-95 disabled:pointer-events-none disabled:opacity-40 grid place-items-center"
+          >
+            <Send size={18} color="#ffffff" />
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 

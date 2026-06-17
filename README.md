@@ -2,7 +2,7 @@
 
 # 💬 WeChat
 
-### *Modern Real-Time Communication Platform*
+### _Modern Real-Time Communication Platform_
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -39,21 +39,25 @@ Designed with a modern, responsive UI and enriched by fluid animations, WeChat i
 ## ✨ Features
 
 ### 🔐 Authentication & Security
+
 - **Google OAuth Integration** — Sign in instantly with your Google account
 - **JWT-based Authorization** — Secure, stateless session management
 - **Protected Routes** — Role-aware access control throughout the app
 
 ### 💬 Messaging
+
 - **Real-Time Direct Messaging** — Instant user-to-user chat powered by WebSockets
 - **Community Conversations** — Group-based discussions in dedicated community spaces
 - **Message Bookmarking** — Save and revisit important messages with a single click
 
 ### 👥 Communities
+
 - **Create & Join Communities** — Build or discover public and private groups
 - **Community Management** — Organize members, topics, and conversations
 - **Live Member Presence** — See who's online in real time
 
 ### 🎨 User Experience
+
 - **Responsive Design** — Fully optimized for desktop, tablet, and mobile
 - **Smooth Animations** — Powered by Framer Motion for fluid, native-like transitions
 - **Modern UI** — Clean, intuitive interface built with Tailwind CSS
@@ -64,28 +68,31 @@ Designed with a modern, responsive UI and enriched by fluid animations, WeChat i
 ## 🛠 Tech Stack
 
 ### Frontend
-| Technology | Purpose |
-|---|---|
-| ⚛️ **React** | Component-based UI library |
-| 🎨 **Tailwind CSS** | Utility-first styling framework |
-| 🎞️ **Framer Motion** | Animations and transitions |
-| 🔀 **React Router DOM** | Client-side routing |
-| 📡 **Axios** | HTTP client for API communication |
-| 🖼️ **Lucide React** | Modern icon library |
-| 🔣 **React Icons** | Extended icon collection |
+
+| Technology              | Purpose                           |
+| ----------------------- | --------------------------------- |
+| ⚛️ **React**            | Component-based UI library        |
+| 🎨 **Tailwind CSS**     | Utility-first styling framework   |
+| 🎞️ **Framer Motion**    | Animations and transitions        |
+| 🔀 **React Router DOM** | Client-side routing               |
+| 📡 **Axios**            | HTTP client for API communication |
+| 🖼️ **Lucide React**     | Modern icon library               |
+| 🔣 **React Icons**      | Extended icon collection          |
 
 ### Backend
-| Technology | Purpose |
-|---|---|
-| 🟢 **Node.js** | JavaScript runtime environment |
-| 🚂 **Express.js** | Web application framework |
+
+| Technology            | Purpose                               |
+| --------------------- | ------------------------------------- |
+| 🟢 **Node.js**        | JavaScript runtime environment        |
+| 🚂 **Express.js**     | Web application framework             |
 | 🔌 **WebSocket (ws)** | Real-time bidirectional communication |
 
 ### Database & Auth
-| Technology | Purpose |
-|---|---|
-| 🐬 **MySQL** | Relational database for persistent storage |
-| 🔑 **Google OAuth 2.0** | Secure third-party authentication |
+
+| Technology              | Purpose                                    |
+| ----------------------- | ------------------------------------------ |
+| 🐬 **MySQL**            | Relational database for persistent storage |
+| 🔑 **Google OAuth 2.0** | Secure third-party authentication          |
 
 ---
 
@@ -118,6 +125,7 @@ Designed with a modern, responsive UI and enriched by fluid animations, WeChat i
 ```
 
 **Communication Flow:**
+
 1. User authenticates via Google OAuth → receives JWT
 2. Frontend connects to WebSocket server with the JWT
 3. Messages are broadcast in real time to all connected participants
@@ -195,12 +203,14 @@ cd wechat
 ### 2. Install Dependencies
 
 **Backend:**
+
 ```bash
 cd server
 npm install
 ```
 
 **Frontend:**
+
 ```bash
 cd ../client
 npm install
@@ -215,6 +225,7 @@ CREATE DATABASE wechat_db;
 ```
 
 Then import the schema (if provided):
+
 ```bash
 mysql -u root -p wechat_db < server/config/schema.sql
 ```
@@ -281,18 +292,21 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ### Development Mode
 
 **Start the backend server:**
+
 ```bash
 cd server
 npm run dev
 ```
 
 **Start the frontend dev server:**
+
 ```bash
 cd client
 npm run dev
 ```
 
 The app will be available at:
+
 - 🌐 **Frontend:** `http://localhost:5173`
 - 🔧 **Backend API:** `http://localhost:5000/api`
 - 🔌 **WebSocket:** `ws://localhost:5000`
@@ -302,12 +316,14 @@ The app will be available at:
 ### Production Mode
 
 **Build the frontend:**
+
 ```bash
 cd client
 npm run build
 ```
 
 **Start the production server:**
+
 ```bash
 cd server
 npm start
@@ -317,15 +333,15 @@ npm start
 
 ## 🖼️ Screenshots
 
-> 📸 *Screenshots coming soon — the application is actively being developed.*
+> 📸 _Screenshots coming soon — the application is actively being developed._
 
-| Feature | Preview |
-|---|---|
-| 🏠 Home / Dashboard | *(screenshot placeholder)* |
-| 💬 Real-Time Chat | *(screenshot placeholder)* |
-| 👥 Community Page | *(screenshot placeholder)* |
-| 🔖 Bookmarks | *(screenshot placeholder)* |
-| 🔐 Login / Auth | *(screenshot placeholder)* |
+| Feature             | Preview                    |
+| ------------------- | -------------------------- |
+| 🏠 Home / Dashboard | _(screenshot placeholder)_ |
+| 💬 Real-Time Chat   | _(screenshot placeholder)_ |
+| 👥 Community Page   | _(screenshot placeholder)_ |
+| 🔖 Bookmarks        | _(screenshot placeholder)_ |
+| 🔐 Login / Auth     | _(screenshot placeholder)_ |
 
 ---
 
@@ -371,15 +387,15 @@ Contributions are what make open-source amazing! All contributions — bug fixes
 
 This project follows [Conventional Commits](https://www.conventionalcommits.org/):
 
-| Prefix | Purpose |
-|---|---|
-| `feat:` | New feature |
-| `fix:` | Bug fix |
-| `docs:` | Documentation update |
-| `style:` | Code formatting (no logic change) |
-| `refactor:` | Code restructuring |
-| `test:` | Adding or updating tests |
-| `chore:` | Build process or tooling changes |
+| Prefix      | Purpose                           |
+| ----------- | --------------------------------- |
+| `feat:`     | New feature                       |
+| `fix:`      | Bug fix                           |
+| `docs:`     | Documentation update              |
+| `style:`    | Code formatting (no logic change) |
+| `refactor:` | Code restructuring                |
+| `test:`     | Adding or updating tests          |
+| `chore:`    | Build process or tooling changes  |
 
 ### Code of Conduct
 
