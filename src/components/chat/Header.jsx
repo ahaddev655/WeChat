@@ -38,18 +38,15 @@ function Header() {
 
   // --- State-Based Data ---
 
-  const [userData, setUserData] = useState([
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 1,
-      fname: "Muhammad",
-      lname: "Ahad",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ahad",
-      status: 1,
-      active_at: "10:45 AM",
-      unreadCount: 2,
-    },
-  ]);
+  const [userData, setUserData] = useState({
+    temp_id: "UID-8F3K9M2X",
+    id: 1,
+    fname: "Muhammad",
+    lname: "Ahad",
+    status: 1,
+    active_at: "10:45 AM",
+    unreadCount: 2,
+  });
 
   // --- Dropdown Logic ---
 
@@ -78,7 +75,9 @@ function Header() {
       <div className="h-20 flex items-center justify-between container-v2 bg-white border-b-2 border-gray-100 shadow-lg">
         {/* Name */}
         <div>
-          <span className="text-xl font-semibold text-slate-800">John Doe</span>
+          <span className="text-xl font-semibold text-slate-800">
+            {userData.fname} {userData.lname}
+          </span>
         </div>
         {/* Social Icons */}
         <div className="flex items-center gap-5 relative">

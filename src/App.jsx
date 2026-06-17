@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import ChatComp from "./components/chat/ChatComp";
 import CommunityComp from "./components/community/CommunityComp";
 import BookmarksComp from './components/BookmarksComp';
+import SplashScreen from "./pages/SplashScreen";
 
 function App() {
   const routes = createBrowserRouter([
@@ -19,6 +20,10 @@ function App() {
     },
     {
       path: "/",
+      element: <SplashScreen />
+    },
+    {
+      path: "/auth",
       element: <AuthenticationPage />,
     },
     {
