@@ -9,7 +9,6 @@ import UserPersonalProfile from "./pages/UserPersonalProfile";
 import Profile from "./pages/Profile";
 import ChatComp from "./components/chat/ChatComp";
 import CommunityComp from "./components/community/CommunityComp";
-import BookmarksComp from './components/BookmarksComp';
 import SplashScreen from "./pages/SplashScreen";
 
 function App() {
@@ -20,7 +19,7 @@ function App() {
     },
     {
       path: "/",
-      element: <SplashScreen />
+      element: <SplashScreen />,
     },
     {
       path: "/auth",
@@ -49,10 +48,6 @@ function App() {
               element: <CommunityComp />,
             },
           ],
-        },
-        {
-          path: "saved",
-          element: <BookmarksComp />,
         },
         {
           path: "profile/:temp_id/:user_id",
