@@ -14,7 +14,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 function Header() {
   // --- States ---
-  const [searchToggle, setSearchToggle] = useState(false);
   const [settingsToggle, setSettingsToggle] = useState(false);
   const [searchData, setSearchData] = useState("");
   const [modalToggle, setModalToggle] = useState(false);
@@ -80,31 +79,7 @@ function Header() {
           </span>
         </div>
         {/* Social Icons */}
-        <div className="flex items-center gap-5 relative">
-          <AnimatePresence>
-            {searchToggle && (
-              <motion.input
-                initial={{ width: 0, style: { transformOrigin: "right" } }}
-                animate={{ width: "100%" }}
-                exit={{ width: 0 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                type="text"
-                name="search"
-                id="search"
-                value={searchData}
-                placeholder="Search your previous messages..."
-                onChange={(e) => setSearchData(e.target.value)}
-                className="h-9 border-2 border-gray-300 focus:border-blue-900 focus:ring-2 focus:ring-blue-900 rounded-lg px-3 transition-colors duration-200 ease-in-out text-sm font-medium text-neutral-700 outline-none w-70 ml-auto"
-              />
-            )}
-          </AnimatePresence>
-          <button type="button" onClick={() => setSearchToggle(!searchToggle)}>
-            <Search
-              size={22}
-              strokeWidth={2}
-              className="text-gray-500 hover:text-blue-800 transition-colors duration-200 ease-in-out"
-            />
-          </button>
+        <div className="relative">
           <button
             ref={buttonRef}
             type="button"
@@ -124,7 +99,7 @@ function Header() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
-                className="absolute w-52 border border-gray-100 rounded-xl top-12 bg-white z-50 shadow-xl -left-36 p-1.5 backdrop-blur-md"
+                className="absolute w-52 border border-gray-100 rounded-xl top-12 bg-white z-50 shadow-xl -left-45 p-1.5 backdrop-blur-md"
               >
                 <Link
                   to={`/chat/profile/${location[2]}/${location[3]}`}

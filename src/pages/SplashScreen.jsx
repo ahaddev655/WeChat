@@ -69,10 +69,10 @@ function SplashScreen() {
             {/* Brand Name & Tagline */}
             <div className="space-y-1.5">
               <h1 className="text-2xl font-bold tracking-tight text-black">
-                Welcome to Nexa
+                Welcome to WeChat
               </h1>
               <p className="text-xs font-medium text-gray-500 max-w-60 mx-auto tracking-wide">
-                Crafting digital experiences for tomorrow
+                Connect with your families and friends
               </p>
             </div>
 
