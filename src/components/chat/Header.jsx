@@ -2,7 +2,7 @@ import {
   Ban,
   Circle,
   EllipsisVertical,
-  Phone,
+  MoveLeft,
   Search,
   Trash2,
   UserCircle,
@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import InputItem from "./../InputItem";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 function Header() {
   // --- States ---
   const [settingsToggle, setSettingsToggle] = useState(false);
@@ -29,6 +29,7 @@ function Header() {
 
   const route = useLocation();
   const location = route.pathname.split("/");
+  const navigate = useNavigate();
 
   // --- ID & UID from routing ---
 
@@ -72,6 +73,15 @@ function Header() {
     <>
       {/* Header */}
       <div className="h-20 flex items-center justify-between container-v2 bg-white border-b-2 border-gray-100 shadow-lg">
+        {/* Back Button */}
+        <button type="button" className="sm:hidden block">
+          <MoveLeft
+            onClick={() => {
+              navigate("/chat");
+              window.location.reload();
+            }}
+          />
+        </button>
         {/* Name */}
         <div>
           <span className="text-xl font-semibold text-slate-800">
@@ -145,19 +155,6 @@ function Header() {
                     Delete Profile
                   </span>
                 </button>
-
-                <div className="h-px w-[90%] mx-auto bg-gray-100 my-1" />
-
-                <Link
-                  to="/"
-                  onClick={() => settingsToggle(false)}
-                  className="flex items-center gap-3 hover:bg-slate-50 active:bg-slate-100 transition-all duration-150 ease-in-out rounded-lg px-3 py-2.5 group"
-                >
-                  <Phone className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors duration-150" />
-                  <span className="text-gray-600 font-medium text-sm group-hover:text-gray-900 transition-colors duration-150">
-                    Call User
-                  </span>
-                </Link>
               </motion.div>
             )}
           </AnimatePresence>

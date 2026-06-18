@@ -39,16 +39,16 @@ function App() {
             },
           ],
         },
-        {
-          path: "communities",
-          element: <CommunitiesLayout />,
-          children: [
-            {
-              path: ":temp_id/:id",
-              element: <CommunityComp />,
-            },
-          ],
-        },
+        // {
+        //   path: "communities",
+        //   element: <CommunitiesLayout />,
+        //   children: [
+        //     {
+        //       path: ":temp_id/:id",
+        //       element: <CommunityComp />,
+        //     },
+        //   ],
+        // },
         {
           path: "profile/:temp_id/:user_id",
           element: <Profile />,

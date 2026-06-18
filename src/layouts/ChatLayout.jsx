@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 function ChatLayout() {
   const [contentType, setContentType] = useState("chat");
+  const [selectedContent, setSelectedContent] = useState(false);
   const location = useLocation();
 
   // --- Toggle Sidebar ---
@@ -25,7 +26,11 @@ function ChatLayout() {
   return (
     <div className="flex h-screen">
       <SecondarySidebar setContentType={setContentType} />
-      <Sidebar contentType={contentType} />
+      <Sidebar
+        contentType={contentType}
+        selectedContent={selectedContent}
+        setSelectedContent={setSelectedContent}
+      />
       <div className="max-w-360 w-full flex-1 h-full flex flex-col">
         <div className="flex flex-col flex-1 min-h-0 w-full">
           <Outlet />
