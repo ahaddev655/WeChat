@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Header from "./../components/chat/Header";
 import Copyright from "./../components/chat/Copyright";
 import Sidebar from "./../components/chat/Sidebar";
@@ -6,9 +6,17 @@ import SecondarySidebar from "./../components/chat/SecondarySidebar";
 import { useEffect, useState } from "react";
 
 function ChatLayout() {
+  // --- States ---
+
   const [contentType, setContentType] = useState("chat");
   const [selectedContent, setSelectedContent] = useState(false);
+
+  // --- Variables ---
+
   const location = useLocation();
+  const navigate = useNavigate();
+  const id = localStorage.getItem("wechat_id");
+  const uid = localStorage.getItem("wechat_uid");
 
   // --- Toggle Sidebar ---
   useEffect(() => {
@@ -22,6 +30,14 @@ function ChatLayout() {
       setContentType("chat");
     }
   }, [location.pathname]);
+
+  // ---- Authentication Check ----
+  useEffect(() => {
+    if (id && uid) {
+      return;
+    }
+    navigate("/auth");
+  }, [id, uid, navigate]);
 
   return (
     <div className="flex h-screen">

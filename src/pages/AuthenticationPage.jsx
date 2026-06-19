@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import GoogleIcon from "../assets/google.svg";
+import { toast, ToastContainer } from "react-toastify";
 
 function AuthenticationPage() {
   // --- Use States ---
@@ -34,6 +35,7 @@ function AuthenticationPage() {
   // --- Variables ---
 
   const navigate = useNavigate();
+  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
 
   // --- Handle Change Functions ---
 
@@ -56,38 +58,53 @@ function AuthenticationPage() {
         !formData.email ||
         !formData.password
       ) {
-        alert("All fields are required...");
+        toast.error("All fields are required...");
         return;
       }
       if (formData.password.length < 11) {
-        alert("Password should be of 11 characters...");
+        toast.error("Password should be of 11 characters...");
         return;
       }
-
-      alert("Register Successful");
-      console.log("Register Data: ", formData);
-      localStorage.setItem("id", 1);
-      setTimeout(() => {
-        navigate("/chat");
-      }, 2500);
+      axios
+        .post(`${base_url}/authentication/register`, formData)
+        .then((response) => {
+          const data = response?.data;
+          localStorage.setItem("wechat_id", data.id);
+          localStorage.setItem("wechat_uid", data.uid);
+          toast.success(data?.message);
+          setTimeout(() => {
+            navigate("/chat");
+          }, 2500);
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.error);
+        });
       return;
     }
     // --- VALIDATIONS ---
     if (!formData.email || !formData.password) {
-      alert("All fields are required...");
+      toast.error("All fields are required...");
       return;
     }
 
-    alert("Login Successful");
     const payload = {
       email: formData.email,
       password: formData.password,
     };
-    console.log("Login Data: ", payload);
-    localStorage.setItem("id", 1);
-    setTimeout(() => {
-      navigate("/chat");
-    }, 2500);
+    axios
+      .post(`${base_url}/authentication/login`, payload)
+      .then((response) => {
+        const data = response?.data;
+        localStorage.setItem("wechat_id", data.id);
+        localStorage.setItem("wechat_uid", data.uid);
+        toast.success(data?.message);
+        setTimeout(() => {
+          navigate("/chat");
+        }, 2500);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.error);
+      });
   };
 
   // --- Google Login Function ---
@@ -100,17 +117,28 @@ function AuthenticationPage() {
         )
         .then((googleRes) => {
           const googleData = {
-            firstName: googleRes.data.given_name || "",
-            lastName: googleRes.data.family_name || "",
+            fname: googleRes.data.given_name || "",
+            lname: googleRes.data.family_name || "",
             email: googleRes.data.email || "",
-            password: "dummy_google_password_encrypted_and_AAAA",
           };
-          console.log("GOOGLE DATA: ", googleData);
-          alert("Google Login Successful");
-          localStorage.setItem("id", 1);
-          setTimeout(() => {
-            navigate("/chat");
-          }, 2500);
+
+          axios
+            .post(
+              `${base_url}/authentication/google-${formToggle === "register" ? "register" : "login"}`,
+              googleData,
+            )
+            .then((response) => {
+              const data = response?.data;
+              localStorage.setItem("wechat_id", data.id);
+              localStorage.setItem("wechat_uid", data.uid);
+              toast.success(data?.message);
+              setTimeout(() => {
+                navigate("/chat");
+              }, 2500);
+            })
+            .catch((error) => {
+              toast.error(error?.response?.data?.error);
+            });
         });
     },
     onError: () => alert("Google Sign-In Failed"),
@@ -118,6 +146,12 @@ function AuthenticationPage() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50">
+      <ToastContainer
+        autoClose={1500}
+        hideProgressBar
+        position="bottom-right"
+        limit={5}
+      />
       {/* Form Container */}
       <div className="max-w-sm w-full bg-white shadow-xl rounded-2xl border border-gray-100 py-5 px-5">
         {/* Heading */}
@@ -205,7 +239,6 @@ function AuthenticationPage() {
             value={formData.password}
           />
 
-          {/* Submit Button - layout prop ensures it slides up/down cleanly */}
           <motion.button
             layout
             type="submit"
