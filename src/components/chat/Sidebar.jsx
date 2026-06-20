@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // --- States ---
@@ -26,13 +28,17 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // --- Variables ---
 
   const location = useLocation();
+
   const id = localStorage.getItem("wechat_id");
+
   const uid = localStorage.getItem("wechat_uid");
+
   const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- State-Based Arrays ---
 
   const [userFriends, setUserFriends] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [communitiesData, setCommunitiesData] = useState([
     {
@@ -54,7 +60,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
 
   // --- Data Filter ---
 
-  const filteredUsers = userFriends.filter((user) =>
+  const filteredUsers = users.filter((user) =>
     `${user.firstName} ${user.lastName}`
       .toLowerCase()
       .includes(searchData.toLowerCase()),
@@ -66,8 +72,9 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
       .includes(searchData.toLowerCase()),
   );
 
-  const filteredUsersList = userFriends.filter((user) => {
-    const fullastName = `${user.firstName} ${user.lastName}`.toLowerCase();
+  const filteredFriendsList = userFriends.filter((user) => {
+    const fullastName =
+      `${user?.friend_firstName} ${user?.friend_lastName}`.toLowerCase();
     const matchesSearch = fullastName.includes(searchQuery.toLowerCase());
 
     if (!matchesSearch) return false;
@@ -102,9 +109,30 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
 
   // --- Add Friend Function ---
 
-  const handleAddFriend = (id) => {
-    alert(`Friend Added --> id = ${id}`);
-    setSelectedModalType("");
+  const handleAddFriend = (friend_uid) => {
+    axios
+      .put(`${base_url}/friends/${friend_uid}/${id}`)
+      .then((response) => {
+        toast.success(response?.data?.message);
+        setSelectedModalType("");
+        fetchFriends();
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.error);
+      });
+  };
+
+  // --- Fetch Friends ---
+
+  const fetchFriends = () => {
+    axios
+      .get(`${base_url}/friends/${id}`)
+      .then((response) => {
+        setUserFriends(response?.data.friends);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.error);
+      });
   };
 
   // --- Fetch Users ---
@@ -114,7 +142,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
     axios
       .get(`${base_url}/user/users/${id}`)
       .then((response) => {
-        setUserFriends(response?.data.users);
+        setUsers(response?.data.users);
         setIsLoading(false);
       })
       .catch(() => {
@@ -124,6 +152,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
 
   useEffect(() => {
     fetchUsers();
+    fetchFriends();
   }, []);
 
   return (
@@ -206,21 +235,21 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                   </div>
                 </div>
               ))
-            ) : filteredUsers.length > 0 ? (
-              filteredUsers.map((user) => (
+            ) : filteredFriendsList.length > 0 ? (
+              filteredFriendsList.map((user) => (
                 <Link
-                  to={`/chat/${user.uid}/${user.id}`}
-                  key={user.id}
+                  to={`/chat/${user.friend_uid}/${user.friend_id}`}
+                  key={user.friend_id}
                   className="block w-full"
                 >
                   <div className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-gray-50 active:bg-gray-100 group">
                     {/* Avatar Layout with Dynamic Status Dot */}
                     <div className="relative shrink-0">
                       <div className="w-11 h-11 rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0 transform group-hover:scale-[1.02] transition-transform grid place-items-center">
-                        {user?.firstName.charAt(0)}
-                        {user?.lastName.charAt(0)}
+                        {user?.friend_firstName.charAt(0)}
+                        {user?.friend_lastName.charAt(0)}
                       </div>
-                      {user.status === 1 && (
+                      {user.friend_status === 1 && (
                         <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white ring-1 ring-black/5" />
                       )}
                     </div>
@@ -229,15 +258,17 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
                         <p className="text-sm font-semibold text-gray-900 truncate">
-                          {user?.firstName} {user.lastName}
+                          {user?.friend_firstName} {user?.friend_lastName}
                         </p>
 
                         <span className="text-[10px] text-gray-400 font-medium">
-                          {user.user_created_at
-                            ? new Date(user.user_created_at).toLocaleDateString(
-                                undefined,
-                                { month: "short", day: "numeric" },
-                              )
+                          {user?.friend_user_created_at
+                            ? new Date(
+                                user.friend_user_created_at,
+                              ).toLocaleDateString(undefined, {
+                                month: "short",
+                                day: "numeric",
+                              })
                             : ""}
                         </span>
                       </div>
@@ -246,7 +277,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                       <div className="flex items-center justify-between">
                         <p className="text-xs text-gray-500 truncate max-w-35">
                           {" "}
-                          {user.status === 1 ? "Online" : "Offline"}
+                          {user.friend_status === 1 ? "Online" : "Offline"}
                         </p>
                       </div>
                     </div>
@@ -320,7 +351,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
         )}
       </div>
 
-      {/* Dektop Sidebar */}
+      {/* Mobile Overlay */}
       <AnimatePresence>
         {!selectedContent && (
           <motion.div
@@ -619,8 +650,8 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                   </div>
 
                   <div className="mt-2 max-h-48 overflow-y-auto flex flex-col gap-1 pr-1 scrollbar-none!">
-                    {filteredUsersList.length > 0 ? (
-                      filteredUsersList.map((user) => (
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map((user) => (
                         <div
                           key={user.id}
                           className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors group"
@@ -638,7 +669,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                             </span>
                           </div>
                           <button
-                            onClick={() => handleAddFriend(user.id)}
+                            onClick={() => handleAddFriend(user.uid)}
                             type="button"
                             className="text-xs font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors"
                           >

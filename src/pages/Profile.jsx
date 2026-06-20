@@ -6,21 +6,24 @@ import { useLocation } from "react-router-dom";
 
 function Profile() {
   // ---- Arrays ----
+
   const friends = [];
   const [userData, setUserData] = useState(null);
   const [copied, setCopied] = useState(false);
 
   // ---- Variables ----
+
   const location = useLocation();
   const path = location.pathname.split("/");
   const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // ---- ID and UID from routing ----
 
-  const id = path[3];
-  const uid = path[4];
+  const id = path[4];
+  const uid = path[3];
 
   // ---- User Details Function ----
+
   const userDetails = () => {
     axios
       .get(`${base_url}/user/user/${uid}/${id}`)
@@ -54,7 +57,7 @@ function Profile() {
   const isLoading = userData === null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 p-4">
+    <div className="flex items-center justify-center bg-slate-50 h-screen">
       <div className="bg-white max-w-md w-full shadow-md rounded-2xl p-6 border border-slate-100 space-y-6 relative">
         {/* Top Navigation / Back Button */}
         <div className="flex items-center justify-between">
