@@ -1,31 +1,35 @@
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 function ChatComp() {
   // --- States ---
+
   const [message, setMessage] = useState("");
   const [userName, setUserName] = useState("Muhammad Ahad");
 
   // --- Use Refs ---
+
   const chatParentDivRef = useRef();
 
   // --- Variables ---
+
   const route = useLocation();
   const location = route.pathname.split("/");
+  const id = localStorage.getItem("wechat_id") || null;
 
   // --- ID & UID from routing ---
-  const id = location[2];
-  const uid = location[3];
+
+  const chat_user_id = location[3];
+  const uid = location[2];
 
   // --- Messages Stored Data ---
-  const [messageData, setMessageData] = useState([
-    { sender: "Ayesha", messageText: "Hey", time: "12:45 PM" },
-    { sender: "Ayesha", messageText: "How are you?", time: "12:45 PM" },
-    { sender: "Muhammad Ahad", messageText: "I am fine", time: "12:45 PM" },
-  ]);
+
+  const [messageData, setMessageData] = useState([]);
 
   // --- Add Message ---
+
   const handleMessageSend = () => {
     if (!message || !message.trim()) {
       alert("Message is required...");
@@ -55,6 +59,18 @@ function ChatComp() {
       }
     }, 50);
   };
+
+  // --- Fetch Messages ---
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/api/messages/${id}/${chat_user_id}`)
+      .then((response) => {
+        console.log(response?.data);
+      })
+      .catch((err) => {
+        alert(err?.response?.data?.error || "Error fetching messages");
+      });
+  }, [messageData]);
 
   return (
     <div className="px-4 py-3 relative flex flex-col h-full pb-20">
