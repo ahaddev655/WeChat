@@ -7,7 +7,7 @@ function ChatComp() {
   // --- States ---
 
   const [message, setMessage] = useState("");
-  const [userName, setUserName] = useState("Muhammad Ahad");
+  const [userName, setUserName] = useState();
 
   // --- Use Refs ---
 
@@ -18,11 +18,13 @@ function ChatComp() {
   const route = useLocation();
   const location = route.pathname.split("/");
   const id = localStorage.getItem("wechat_id") || null;
+  const uid = localStorage.getItem("wechat_uid") || null;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- ID & UID from routing ---
 
   const chat_user_id = location[3];
-  const uid = location[2];
+  const chat_user_uid = location[2];
 
   // --- Messages Stored Data ---
 
@@ -49,28 +51,63 @@ function ChatComp() {
       time: currentFormattedTime,
     };
 
-    setMessageData((prev) => [...prev, payload]);
-    setMessage("");
+    axios
+      .post(`${base_url}/messages/add/${id}/${chat_user_id}`, payload)
+      .then((response) => {
+        console.log(response.data);
+        setMessageData((prev) => [...prev, payload]);
+        setMessage("");
+        setTimeout(() => {
+          if (chatParentDivRef.current) {
+            chatParentDivRef.current.scrollTop =
+              chatParentDivRef.current.scrollHeight;
+          }
+        }, 50);
+        fetchMessages();
+      })
+      .catch((err) => {
+        alert(err?.response?.data?.error || "Error sending message");
+      });
+  };
 
-    setTimeout(() => {
-      if (chatParentDivRef.current) {
-        chatParentDivRef.current.scrollTop =
-          chatParentDivRef.current.scrollHeight;
-      }
-    }, 50);
+  const fetchMessages = () => {
+    axios
+      .get(`${base_url}/messages/${id}/${chat_user_id}`)
+      .then((response) => {
+        setMessageData(response?.data.data[0].messages || []);
+        setTimeout(() => {
+          if (chatParentDivRef.current) {
+            chatParentDivRef.current.scrollTop =
+              chatParentDivRef.current.scrollHeight;
+          }
+        }, 100);
+      })
+      .catch((err) => {});
   };
 
   // --- Fetch Messages ---
   useEffect(() => {
+    fetchMessages();
+    setInterval(() => {
+      fetchMessages();
+    }, 10000);
+  }, []);
+
+  // --- Fetch Name ---
+  useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/messages/${id}/${chat_user_id}`)
+      .get(`${base_url}/user/user/${uid}/${id}`)
       .then((response) => {
-        console.log(response?.data);
+        setUserName(
+          response?.data.user_details.firstName +
+            " " +
+            response?.data.user_details.lastName || "Unknown User",
+        );
       })
       .catch((err) => {
-        alert(err?.response?.data?.error || "Error fetching messages");
+        alert(err?.response?.data?.error || "Error fetching user name");
       });
-  }, [messageData]);
+  }, [id]);
 
   return (
     <div className="px-4 py-3 relative flex flex-col h-full pb-20">
@@ -94,7 +131,7 @@ function ChatComp() {
           : "bg-white text-neutral-800 rounded-bl-none border border-gray-100 order-1"
       }`}
             >
-              {message.messageText}
+              {message.message}
             </div>
 
             {/* Timestamp */}
