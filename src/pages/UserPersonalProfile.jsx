@@ -12,7 +12,7 @@ function UserPersonalProfile() {
   // ---- Variables ----
   const id = localStorage.getItem("wechat_id");
   const uid = localStorage.getItem("wechat_uid");
-  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // ---- User Details Function ----
   const userDetails = () => {

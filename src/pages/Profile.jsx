@@ -13,12 +13,12 @@ function Profile() {
   // ---- Variables ----
   const location = useLocation();
   const path = location.pathname.split("/");
-  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // ---- ID and UID from routing ----
 
-  const id = location[2];
-  const uid = location[3];
+  const id = path[3];
+  const uid = path[4];
 
   // ---- User Details Function ----
   const userDetails = () => {

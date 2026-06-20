@@ -19,6 +19,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   const [selectedModalType, setSelectedModalType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   // --- Arrays ---
 
@@ -27,6 +28,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   const location = useLocation();
   const id = localStorage.getItem("wechat_id");
   const uid = localStorage.getItem("wechat_uid");
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- State-Based Arrays ---
 
@@ -64,7 +66,6 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
       .includes(searchData.toLowerCase()),
   );
 
-  // FIXED: Reading from state (userFriends) instead of empty local array, and matching status as numerical 1 / 0
   const filteredUsersList = userFriends.filter((user) => {
     const fullastName = `${user.firstName} ${user.lastName}`.toLowerCase();
     const matchesSearch = fullastName.includes(searchQuery.toLowerCase());
@@ -109,9 +110,16 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // --- Fetch Users ---
 
   const fetchUsers = () => {
-    axios.get(`http://localhost:3000/api/user/users/${id}`).then((response) => {
-      setUserFriends(response?.data.users);
-    });
+    setIsLoading(true);
+    axios
+      .get(`${base_url}/user/users/${id}`)
+      .then((response) => {
+        setUserFriends(response?.data.users);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -182,7 +190,23 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
         {/* User Data */}
         {contentType === "chat" ? (
           <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-            {filteredUsers.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 animate-pulse"
+                >
+                  <div className="w-11 h-11 rounded-full bg-gray-200 shrink-0" />
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="h-4 bg-gray-200 rounded-md w-2/3" />
+                      <div className="h-3 bg-gray-200 rounded-md w-12" />
+                    </div>
+                    <div className="h-3 bg-gray-200 rounded-md w-1/3" />
+                  </div>
+                </div>
+              ))
+            ) : filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <Link
                   to={`/chat/${user.uid}/${user.id}`}
@@ -240,7 +264,20 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-            {filteredCommunities.length > 0 ? (
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-3 animate-pulse"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-gray-200 shrink-0" />
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded-md w-1/2" />
+                    <div className="h-3 bg-gray-200 rounded-md w-3/4" />
+                  </div>
+                </div>
+              ))
+            ) : filteredCommunities.length > 0 ? (
               filteredCommunities.map((community) => (
                 <Link
                   to={`/chat/communities/${community.uid}/${community.id}`}
@@ -368,7 +405,23 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
             {/* User Data */}
             {contentType === "chat" ? (
               <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-                {filteredUsers.length > 0 ? (
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 animate-pulse"
+                    >
+                      <div className="w-11 h-11 rounded-full bg-gray-200 shrink-0" />
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="h-4 bg-gray-200 rounded-md w-2/3" />
+                          <div className="h-3 bg-gray-200 rounded-md w-12" />
+                        </div>
+                        <div className="h-3 bg-gray-200 rounded-md w-1/3" />
+                      </div>
+                    </div>
+                  ))
+                ) : filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => (
                     <Link
                       onClick={() => setSelectedContent(true)}
@@ -429,7 +482,20 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto px-2 space-y-1 pb-4">
-                {filteredCommunities.length > 0 ? (
+                {isLoading ? (
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 animate-pulse"
+                    >
+                      <div className="w-11 h-11 rounded-xl bg-gray-200 shrink-0" />
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded-md w-1/2" />
+                        <div className="h-3 bg-gray-200 rounded-md w-3/4" />
+                      </div>
+                    </div>
+                  ))
+                ) : filteredCommunities.length > 0 ? (
                   filteredCommunities.map((community) => (
                     <Link
                       to={`/chat/communities/${community.uid}/${community.id}`}

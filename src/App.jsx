@@ -20,10 +20,10 @@ const AppTracker = () => {
   const location = useLocation();
   const id = localStorage.getItem("wechat_id");
   const uid = localStorage.getItem("wechat_uid");
-  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   useEffect(() => {
-    if (!id) window.close();
+    if (!id) return;
 
     // ---- Status Change ----
     axios
@@ -31,11 +31,10 @@ const AppTracker = () => {
       .then((response) => {})
       .catch((error) => {
         console.error(error?.response?.data?.error || "Error updating status");
-        window.close();
       });
 
     // ---- Block Check ----
-    if (!uid) window.close();
+    if (!uid) return;
     axios
       .get(`${base_url}/user/user/${uid}/${id}`)
       .then((response) => {
@@ -46,9 +45,7 @@ const AppTracker = () => {
           window.close();
         }
       })
-      .catch((error) => {
-        window.close();
-      });
+      .catch((error) => {});
   }, [location.pathname, base_url, id, uid]);
 
   return <Outlet />;

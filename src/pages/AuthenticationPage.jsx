@@ -35,7 +35,7 @@ function AuthenticationPage() {
   // --- Variables ---
 
   const navigate = useNavigate();
-  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- Handle Change Functions ---
 
