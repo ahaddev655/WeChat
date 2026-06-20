@@ -1,10 +1,18 @@
-import { MessageSquarePlus, Search, X, Filter } from "lucide-react";
+import {
+  MessageSquarePlus,
+  Search,
+  X,
+  Filter,
+  CircleUserRound,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // --- States ---
+
   const [searchData, setSearchData] = useState("");
   const [toggleSidebar, setToggleSidebar] = useState(true);
   // const [modalType, setModalType] = useState("");
@@ -13,65 +21,30 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   const [activeFilter, setActiveFilter] = useState("all");
 
   // --- Arrays ---
-  const dummyUsers = [
-    { id: 1, fname: "John", lname: "Doe", status: "online", recent: true },
-    { id: 2, fname: "Jane", lname: "Smith", status: "offline", recent: true },
-    { id: 3, fname: "Alex", lname: "Jones", status: "online", recent: false },
-    {
-      id: 4,
-      fname: "Sarah",
-      lname: "Wilson",
-      status: "offline",
-      recent: false,
-    },
-    { id: 5, fname: "Michael", lname: "Brown", status: "online", recent: true },
-  ];
 
   // --- Variables ---
+
   const location = useLocation();
+  const id = localStorage.getItem("wechat_id");
+  const uid = localStorage.getItem("wechat_uid");
 
   // --- State-Based Arrays ---
 
-  const [userData, setUserData] = useState([
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 1,
-      fname: "Muhammad",
-      lname: "Ahad",
-      status: 1,
-      active_at: "10:45 AM",
-    },
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 2,
-      fname: "Sarah",
-      lname: "Ahmed",
-      status: 0,
-      active_at: "Yesterday",
-    },
-    {
-      temp_id: "UID-8F3K9M2X",
-      id: 3,
-      fname: "John",
-      lname: "Doe",
-      status: 0,
-      active_at: "Friday",
-    },
-  ]);
+  const [userFriends, setUserFriends] = useState([]);
 
   const [communitiesData, setCommunitiesData] = useState([
     {
-      temp_id: "UID-8F3K9M2X",
+      uid: "UID-8F3K9M2X",
       id: 1,
       communityName: "Hello World",
     },
     {
-      temp_id: "UID-8F3K9M2X",
+      uid: "UID-8F3K9M2X",
       id: 2,
       communityName: "Hello World",
     },
     {
-      temp_id: "UID-8F3K9M2X",
+      uid: "UID-8F3K9M2X",
       id: 3,
       communityName: "Hello World",
     },
@@ -79,8 +52,8 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
 
   // --- Data Filter ---
 
-  const filteredUsers = userData.filter((user) =>
-    `${user.fname} ${user.lname}`
+  const filteredUsers = userFriends.filter((user) =>
+    `${user.firstName} ${user.lastName}`
       .toLowerCase()
       .includes(searchData.toLowerCase()),
   );
@@ -91,18 +64,19 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
       .includes(searchData.toLowerCase()),
   );
 
-  const filteredUsersList = dummyUsers.filter((user) => {
-    const fullName = `${user.fname} ${user.lname}`.toLowerCase();
-    const matchesSearch = fullName.includes(searchQuery.toLowerCase());
+  // FIXED: Reading from state (userFriends) instead of empty local array, and matching status as numerical 1 / 0
+  const filteredUsersList = userFriends.filter((user) => {
+    const fullastName = `${user.firstName} ${user.lastName}`.toLowerCase();
+    const matchesSearch = fullastName.includes(searchQuery.toLowerCase());
 
     if (!matchesSearch) return false;
-    if (activeFilter === "online") return user.status === "online";
-    if (activeFilter === "offline") return user.status === "offline";
-    if (activeFilter === "recent") return user.recent;
+    if (activeFilter === "online") return user.status === 1;
+    if (activeFilter === "offline") return user.status === 0;
     return true;
   });
 
   // --- Toggle Sidebar ---
+
   // useEffect(() => {
   //   const path = location.pathname;
 
@@ -114,6 +88,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // }, [location.pathname]);
 
   // --- Toggle Modal Type ---
+
   // useEffect(() => {
   //   const path = location.pathname;
 
@@ -124,10 +99,24 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   //   }
   // }, [location.pathname]);
 
+  // --- Add Friend Function ---
+
   const handleAddFriend = (id) => {
     alert(`Friend Added --> id = ${id}`);
     setSelectedModalType("");
   };
+
+  // --- Fetch Users ---
+
+  const fetchUsers = () => {
+    axios.get(`http://localhost:3000/api/user/users/${id}`).then((response) => {
+      setUserFriends(response?.data.users);
+    });
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <>
@@ -147,12 +136,9 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
               type="button"
               aria-label="New Message"
               className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 active:scale-95"
+              onClick={() => setSelectedModalType("chat")}
             >
-              <MessageSquarePlus
-                size={20}
-                strokeWidth={2}
-                onClick={() => setSelectedModalType("chat")}
-              />
+              <MessageSquarePlus size={20} strokeWidth={2} />
             </button>
           </div>
 
@@ -199,7 +185,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <Link
-                  to={`/chat/${user.temp_id}/${user.id}`}
+                  to={`/chat/${user.uid}/${user.id}`}
                   key={user.id}
                   className="block w-full"
                 >
@@ -207,8 +193,8 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                     {/* Avatar Layout with Dynamic Status Dot */}
                     <div className="relative shrink-0">
                       <div className="w-11 h-11 rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0 transform group-hover:scale-[1.02] transition-transform grid place-items-center">
-                        {user?.fname.charAt(0)}
-                        {user?.lname.charAt(0)}
+                        {user?.firstName.charAt(0)}
+                        {user?.lastName.charAt(0)}
                       </div>
                       {user.status === 1 && (
                         <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white ring-1 ring-black/5" />
@@ -219,10 +205,16 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-0.5">
                         <p className="text-sm font-semibold text-gray-900 truncate">
-                          {user.fname} {user.lname}
+                          {user?.firstName} {user.lastName}
                         </p>
-                        <span className="text-xs text-gray-400 font-medium">
-                          {user.active_at}
+
+                        <span className="text-[10px] text-gray-400 font-medium">
+                          {user.user_created_at
+                            ? new Date(user.user_created_at).toLocaleDateString(
+                                undefined,
+                                { month: "short", day: "numeric" },
+                              )
+                            : ""}
                         </span>
                       </div>
 
@@ -251,7 +243,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
             {filteredCommunities.length > 0 ? (
               filteredCommunities.map((community) => (
                 <Link
-                  to={`/chat/communities/${community.temp_id}/${community.id}`}
+                  to={`/chat/communities/${community.uid}/${community.id}`}
                   key={community.id}
                   className="block w-full"
                 >
@@ -268,7 +260,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                     {/* Community Details */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-gray-800 truncate group-hover:text-blue-600 transition-colors">
+                        <p className="text-sm font-semibold text-gray-880 truncate group-hover:text-blue-600 transition-colors">
                           {community.communityName}
                         </p>
                       </div>
@@ -311,17 +303,29 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                       ? "Communities"
                       : "Bookmarks"}
                 </h2>
-                <button
-                  type="button"
-                  aria-label="New Message"
-                  className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 active:scale-95"
+                <div
+                  className="flex items-center
+                "
                 >
-                  <MessageSquarePlus
-                    size={20}
-                    strokeWidth={2}
+                  <Link to={"/profile"}>
+                    <button
+                      type="button"
+                      aria-label="New Message"
+                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 active:scale-95"
+                    >
+                      <CircleUserRound size={20} strokeWidth={2} />
+                    </button>
+                  </Link>
+
+                  <button
+                    type="button"
+                    aria-label="New Message"
+                    className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 active:scale-95"
                     onClick={() => setSelectedModalType("chat")}
-                  />
-                </button>
+                  >
+                    <MessageSquarePlus size={20} strokeWidth={2} />
+                  </button>
+                </div>
               </div>
 
               {/* Search Bar */}
@@ -368,7 +372,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                   filteredUsers.map((user) => (
                     <Link
                       onClick={() => setSelectedContent(true)}
-                      to={`/chat/${user.temp_id}/${user.id}`}
+                      to={`/chat/${user.uid}/${user.id}`}
                       key={user.id}
                       className="block w-full"
                     >
@@ -376,8 +380,8 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                         {/* Avatar Layout with Dynamic Status Dot */}
                         <div className="relative shrink-0">
                           <div className="w-11 h-11 rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm tracking-wider shadow-sm border border-blue-100/20 shrink-0 transform group-hover:scale-[1.02] transition-transform grid place-items-center">
-                            {user?.fname.charAt(0)}
-                            {user?.lname.charAt(0)}
+                            {user?.firstName.charAt(0)}
+                            {user?.lastName.charAt(0)}
                           </div>
                           {user.status === 1 && (
                             <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white ring-1 ring-black/5" />
@@ -388,10 +392,18 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-0.5">
                             <p className="text-sm font-semibold text-gray-900 truncate">
-                              {user.fname} {user.lname}
+                              {user.firstName} {user.lastName}
                             </p>
-                            <span className="text-xs text-gray-400 font-medium">
-                              {user.active_at}
+
+                            <span className="text-[10px] text-gray-400 font-medium">
+                              {user.user_created_at
+                                ? new Date(
+                                    user.user_created_at,
+                                  ).toLocaleDateString(undefined, {
+                                    month: "short",
+                                    day: "numeric",
+                                  })
+                                : ""}
                             </span>
                           </div>
 
@@ -420,7 +432,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                 {filteredCommunities.length > 0 ? (
                   filteredCommunities.map((community) => (
                     <Link
-                      to={`/chat/communities/${community.temp_id}/${community.id}`}
+                      to={`/chat/communities/${community.uid}/${community.id}`}
                       key={community.id}
                       className="block w-full"
                     >
@@ -538,17 +550,6 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                     >
                       Offline
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveFilter("recent")}
-                      className={`px-2.5 py-1 text-xs font-medium rounded-full border transition-colors ${
-                        activeFilter === "recent"
-                          ? "bg-blue-50 text-blue-600 border-blue-100"
-                          : "bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-black border-gray-200"
-                      }`}
-                    >
-                      Recent
-                    </button>
                   </div>
 
                   <div className="mt-2 max-h-48 overflow-y-auto flex flex-col gap-1 pr-1 scrollbar-none!">
@@ -560,14 +561,14 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                         >
                           <div className="flex items-center gap-2.5">
                             <div className="relative h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 text-xs font-semibold text-gray-600">
-                              {user.fname[0]}
-                              {user.lname[0]}
-                              {user.status === "online" && (
+                              {user.firstName ? user.firstName[0] : ""}
+                              {user.lastName ? user.lastName[0] : ""}
+                              {user.status === 1 && (
                                 <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-blue-500 ring-2 ring-white" />
                               )}
                             </div>
                             <span className="text-sm font-medium text-black">
-                              {user.fname} {user.lname}
+                              {user.firstName} {user.lastName}
                             </span>
                           </div>
                           <button
@@ -587,7 +588,11 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
                   </div>
                 </div>
               ) : (
-                "a"
+                <div className="py-6 text-center">
+                  <p className="text-sm font-medium text-gray-500">
+                    No other action views available
+                  </p>
+                </div>
               )}
             </motion.div>
           </motion.div>
