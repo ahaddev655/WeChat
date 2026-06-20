@@ -9,8 +9,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 function Sidebar({ contentType, selectedContent, setSelectedContent }) {
   // --- States ---
@@ -60,26 +59,26 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
 
   // --- Data Filter ---
 
-  const filteredUsers = (users || []).filter((user) =>
-    `${user?.firstName || ""} ${user?.lastName || ""}`
+  const filteredUsers = users.filter((user) =>
+    `${user.firstName} ${user.lastName}`
       .toLowerCase()
       .includes(searchData.toLowerCase()),
   );
 
-  const filteredCommunities = (communitiesData || []).filter((community) =>
-    `${community?.communityName || ""}`
+  const filteredCommunities = communitiesData.filter((community) =>
+    `${community.communityName}`
       .toLowerCase()
       .includes(searchData.toLowerCase()),
   );
 
-  const filteredFriendsList = (userFriends || []).filter((user) => {
+  const filteredFriendsList = userFriends.filter((user) => {
     const fullastName =
-      `${user?.friend_firstName || ""} ${user?.friend_lastName || ""}`.toLowerCase();
+      `${user?.friend_firstName} ${user?.friend_lastName}`.toLowerCase();
     const matchesSearch = fullastName.includes(searchQuery.toLowerCase());
 
     if (!matchesSearch) return false;
-    if (activeFilter === "online") return user?.status === 1;
-    if (activeFilter === "offline") return user?.status === 0;
+    if (activeFilter === "online") return user.status === 1;
+    if (activeFilter === "offline") return user.status === 0;
     return true;
   });
 
@@ -128,7 +127,8 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
     axios
       .get(`${base_url}/friends/${id}`)
       .then((response) => {
-        setUserFriends(response?.data.friends);
+        const parsedFriends = JSON.parse(response?.data.friends);
+        setUserFriends(parsedFriends);
       })
       .catch((error) => {
         toast.error(error?.response?.data?.error);
