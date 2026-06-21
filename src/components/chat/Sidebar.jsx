@@ -130,9 +130,7 @@ function Sidebar({ contentType, selectedContent, setSelectedContent }) {
         const parsedFriends = JSON.parse(response?.data.friends);
         setUserFriends(parsedFriends);
       })
-      .catch((error) => {
-        toast.error(error?.response?.data?.error);
-      });
+      .catch((error) => {});
   };
 
   // --- Fetch Users ---

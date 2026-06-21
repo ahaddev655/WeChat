@@ -8,16 +8,16 @@ function SplashScreen() {
   const navigate = useNavigate();
   const id = localStorage.getItem("wechat_id");
   const uid = localStorage.getItem("wechat_uid");
+
   // --- Effects ---
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => {
-        if (id && uid) {
-          navigate("/chat");
-        }
-        navigate("/auth");
-      }, 3500);
+      if (id && uid) {
+        navigate("/chat");
+        return;
+      }
+      navigate("/auth");
     }, 3000);
 
     return () => clearTimeout(timer);

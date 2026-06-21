@@ -2,6 +2,11 @@ import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import Pusher from "pusher-js";
+
+const pusher = new Pusher("399668b03a86e555fdaf", {
+  cluster: "ap2",
+});
 
 function ChatComp() {
   // --- States ---
@@ -19,7 +24,7 @@ function ChatComp() {
   const location = route.pathname.split("/");
   const id = localStorage.getItem("wechat_id") || null;
   const uid = localStorage.getItem("wechat_uid") || null;
-  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
+  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
 
   // --- ID & UID from routing ---
 
@@ -55,7 +60,7 @@ function ChatComp() {
       .post(`${base_url}/messages/add/${id}/${chat_user_id}`, payload)
       .then((response) => {
         console.log(response.data);
-        setMessageData((prev) => [...prev, payload]);
+        // setMessageData((prev) => [...prev, payload]);
         setMessage("");
         setTimeout(() => {
           if (chatParentDivRef.current) {
@@ -65,16 +70,17 @@ function ChatComp() {
         }, 50);
         fetchMessages();
       })
-      .catch((err) => {
-        alert(err?.response?.data?.error || "Error sending message");
-      });
+      .catch((err) => {});
   };
 
   const fetchMessages = () => {
     axios
       .get(`${base_url}/messages/${id}/${chat_user_id}`)
       .then((response) => {
-        setMessageData(response?.data.data[0].messages || []);
+        const raw_messages = response?.data.data[0]?.messages || [];
+        const messages = JSON.parse(raw_messages);
+        setMessageData(messages);
+
         setTimeout(() => {
           if (chatParentDivRef.current) {
             chatParentDivRef.current.scrollTop =
@@ -86,12 +92,29 @@ function ChatComp() {
   };
 
   // --- Fetch Messages ---
+
   useEffect(() => {
     fetchMessages();
-    setInterval(() => {
-      fetchMessages();
-    }, 10000);
-  }, []);
+
+    if (!id || !chat_user_id) return;
+    const sortedIds = [id, chat_user_id].sort().join("-");
+    const channel = pusher.subscribe(`chat-${sortedIds}`);
+
+    channel.bind("new-message", (newMessage) => {
+      setMessageData((prev) => [...prev, newMessage]);
+      setTimeout(() => {
+        if (chatParentDivRef.current) {
+          chatParentDivRef.current.scrollTop =
+            chatParentDivRef.current.scrollHeight;
+        }
+      }, 50);
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [id, chat_user_id]);
 
   // --- Fetch Name ---
   useEffect(() => {
@@ -104,9 +127,7 @@ function ChatComp() {
             response?.data.user_details.lastName || "Unknown User",
         );
       })
-      .catch((err) => {
-        alert(err?.response?.data?.error || "Error fetching user name");
-      });
+      .catch((err) => {});
   }, [id]);
 
   return (

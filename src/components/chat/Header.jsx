@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import InputItem from "./../InputItem";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 function Header() {
   // --- States ---
   const [settingsToggle, setSettingsToggle] = useState(false);
@@ -30,23 +31,16 @@ function Header() {
   const route = useLocation();
   const location = route.pathname.split("/");
   const navigate = useNavigate();
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- ID & UID from routing ---
 
-  const id = location[2];
-  const uid = location[3];
+  const uid = location[2];
+  const id = location[3];
 
   // --- State-Based Data ---
 
-  const [userData, setUserData] = useState({
-    temp_id: "UID-8F3K9M2X",
-    id: 1,
-    fname: "Muhammad",
-    lname: "Ahad",
-    status: 1,
-    active_at: "10:45 AM",
-    unreadCount: 2,
-  });
+  const [userData, setUserData] = useState({});
 
   // --- Dropdown Logic ---
 
@@ -69,6 +63,25 @@ function Header() {
     };
   }, []);
 
+  // --- Fetch User Details ---
+
+  const userDetails = () => {
+    axios
+      .get(`${base_url}/user/user/${uid}/${id}`)
+      .then((response) => {
+        const data = response?.data.user_details;
+
+        setUserData(data || {});
+      })
+      .catch((error) => {
+        setUserData({});
+      });
+  };
+
+  useEffect(() => {
+    userDetails();
+  }, []);
+
   return (
     <>
       {/* Header */}
@@ -85,7 +98,7 @@ function Header() {
         {/* Name */}
         <div>
           <span className="text-xl font-semibold text-slate-800">
-            {userData.fname} {userData.lname}
+            {userData.firstName} {userData.lastName}
           </span>
         </div>
         {/* Social Icons */}
