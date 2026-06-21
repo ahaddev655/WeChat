@@ -24,7 +24,7 @@ function ChatComp() {
   const location = route.pathname.split("/");
   const id = localStorage.getItem("wechat_id") || null;
   const uid = localStorage.getItem("wechat_uid") || null;
-  const base_url = import.meta.env.VITE_API_LOCAL_BASE_URL;
+  const base_url = import.meta.env.VITE_API_PRODUCTION_BASE_URL;
 
   // --- ID & UID from routing ---
 
