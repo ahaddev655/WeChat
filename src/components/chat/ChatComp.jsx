@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Pusher from "pusher-js";
 
-const pusher = new Pusher("399668b03a86e555fdaf", {
+const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
   cluster: "ap2",
 });
 
